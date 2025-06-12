@@ -1,37 +1,36 @@
-'use client'
-
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import React from 'react'
+import { InputHTMLAttributes } from 'react'
 
-interface PasswordInputProps {
+type PasswordInputProps = {
   label: string
-  name: string
-  value: string
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
   show: boolean
   toggle: () => void
-}
+  error?: string
+} & InputHTMLAttributes<HTMLInputElement>
 
 export default function PasswordInput({
   label,
-  name,
-  value,
-  onChange,
   show,
   toggle,
+  error,
+  ...props
 }: PasswordInputProps) {
   return (
-    <div>
-      <label htmlFor={name} className="block text-sm font-medium mb-1">{label}</label>
+    <div className="w-full flex flex-col gap-2">
+      <label htmlFor={props.name} className="block text-sm text-gray-900 font-bold">
+        {label}
+      </label>
+
       <div className="relative">
         <input
-          id={name}
-          name={name}
+          id={props.name}
           type={show ? 'text' : 'password'}
-          value={value}
-          onChange={onChange}
-          placeholder={`${label}를 입력해주세요.`}
-          className="w-full rounded-md bg-gray-100 px-3 py-2 pr-10 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+          className={`w-full rounded-lg px-3 py-2 text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 pr-10 ${
+            error
+              ? 'border border-red-500 bg-red-50 focus:ring-red-500'
+              : 'bg-gray-100 focus:ring-orange-500'
+          }`}
+          {...props}
         />
         <button
           type="button"
@@ -41,6 +40,8 @@ export default function PasswordInput({
           {show ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
         </button>
       </div>
+
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
     </div>
   )
 }

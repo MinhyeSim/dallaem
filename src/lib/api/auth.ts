@@ -1,5 +1,4 @@
 import apiClient from './axios'
-import { TEAM_ID } from '../config'
 
 export interface SignupPayload {
   name: string
@@ -8,7 +7,19 @@ export interface SignupPayload {
   password: string
 }
 
+const TEAM_ID = process.env.NEXT_PUBLIC_TEAM_ID
+
 export const signup = async (data: SignupPayload) => {
   const response = await apiClient.post(`/${TEAM_ID}/auths/signup`, data)
+  return response.data
+}
+
+export interface LoginPayload {
+  email: string
+  password: string
+}
+
+export const login = async (data: LoginPayload) => {
+  const response = await apiClient.post(`/${TEAM_ID}/auths/signin`, data)
   return response.data
 }
