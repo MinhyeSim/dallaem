@@ -7,7 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { EyeIcon, EyeOffIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '../../providers/AuthProvieder'; 
+import { useAuth } from '../../providers/AuthProvider'; 
 
 const loginSchema = z.object({
   email: z.string().min(1, '이메일을 입력해주세요.').email('올바른 이메일 형식이 아닙니다.'),
