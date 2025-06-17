@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { Inter, Roboto_Mono } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/common/Navbar';
-import { AuthProvider } from '../providers/AuthProvider';
+import Navbar from '@/components/common/ui/Navbar';
+import AuthProvider from '@/providers/AuthProvider';
+import Providers from '@/providers/Providers';
 
 const geistSans = Inter({
   variable: '--font-geist-sans',
@@ -25,10 +26,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body>
-        <AuthProvider>
-          <Navbar />
-          {children}
-        </AuthProvider>
+        <Providers>
+          <AuthProvider>
+            <Navbar />
+            {children}
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
