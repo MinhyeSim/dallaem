@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Roboto_Mono } from 'next/font/google';
 import './globals.css';
-import Navbar from '@/components/common/ui/Navbar';
+import Navbar from '@/components/shared/ui/Navbar';
 import AuthProvider from '@/providers/AuthProvider';
 import Providers from '@/providers/Providers';
 

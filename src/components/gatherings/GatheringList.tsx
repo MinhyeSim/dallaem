@@ -11,9 +11,6 @@ interface Props {
 export default function GatheringList({ gatherings }: Props) {
   const router = useRouter();
 
-  console.log('[List] Gatherings:', gatherings); // GatheringList.tsx 내부
-
-
   return (
     <div className="flex flex-col gap-4">
       {gatherings
