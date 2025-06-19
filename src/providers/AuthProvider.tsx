@@ -30,7 +30,6 @@ type AuthContextType = {
   userId: number;
 };
 
-// 기본값
 export const AuthContext = createContext<AuthContextType>({
   token: null,
   loginModalOpen: false,
@@ -105,7 +104,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setUserId(result.data.id);
       }
     } catch (error) {
-      throw error;
+      console.error('🚨 fetchUser 실패', error);
     }
   };
 
@@ -123,15 +122,14 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     await axios.post('/api/auth/signout');
   };
 
-  // 최초 렌더링 시 localStorage에서 인증 정보 읽어오기
+  
   useEffect(() => {
-    const checkAuth = () => {
+    const checkAuth = async () => {
       const storedToken = localStorage.getItem('token');
-      const userName = localStorage.getItem('user_name');
-      const userId = localStorage.getItem('user_id');
-      if (storedToken) setToken(storedToken);
-      if (userName) setUserName(userName);
-      if (userId) setUserId(Number(userId));
+      if (storedToken) {
+        setToken(storedToken);
+        await fetchUser(storedToken); 
+      }
       setIsLoading(false);
     };
     checkAuth();

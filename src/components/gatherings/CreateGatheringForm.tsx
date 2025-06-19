@@ -1,8 +1,16 @@
 'use client';
 
 import { useState } from 'react';
+import { useCreateGathering } from '@/hooks/api/useCreateGathering';
+import { useAuth } from '@/providers/AuthProvider';
 
-export default function CreateGatheringForm() {
+export default function CreateGatheringForm({ onClose }: { onClose: () => void }) {
+  const { token } = useAuth();
+
+  if (!token) return null;
+
+  const { mutate: createGathering, isPending } = useCreateGathering(token);
+
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -17,7 +25,10 @@ export default function CreateGatheringForm() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'capacity' ? Number(value) : value,
+    }));
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -27,8 +38,37 @@ export default function CreateGatheringForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('폼 데이터:', formData);
-    // TODO: API 요청 연동 예정
+
+    if (!formData.image) {
+      alert('이미지를 첨부해주세요.');
+      return;
+    }
+
+    if (formData.capacity < 5) {
+      alert('모집 정원은 최소 5명 이상이어야 합니다.');
+      return;
+    }
+
+    createGathering(
+      {
+        type: formData.type,
+        name: formData.name,
+        location: formData.location,
+        dateTime: new Date(formData.dateTime).toISOString(),
+        registrationEnd: new Date(formData.registrationEnd).toISOString(),
+        capacity: formData.capacity,
+        image: formData.image,
+      },
+      {
+        onSuccess: () => {
+          alert('모임이 성공적으로 생성되었습니다!');
+          onClose();
+        },
+        onError: () => {
+          alert('모임 생성 중 오류가 발생했습니다.');
+        },
+      }
+    );
   };
 
   return (
@@ -66,25 +106,22 @@ export default function CreateGatheringForm() {
       {/* 이미지 */}
       <div className="flex items-center gap-3">
         <input
-            type="text"
-            disabled
-            placeholder="이미지를 첨부해주세요"
-            value={formData.image?.name || ''}
-            className="w-full border border-gray-200 rounded-md px-4 py-3 text-gray-400 bg-gray-50"
+          type="text"
+          disabled
+          placeholder="이미지를 첨부해주세요"
+          value={formData.image?.name || ''}
+          className="w-full border border-gray-200 rounded-md px-4 py-3 text-gray-400 bg-gray-50"
         />
-        <label
-            className="shrink-0 text-sm text-orange-500 border border-orange-500 px-3 py-2 rounded-md cursor-pointer hover:bg-orange-50 transition whitespace-nowrap"
-        >
-            파일 찾기
-            <input
+        <label className="shrink-0 text-sm text-orange-500 border border-orange-500 px-3 py-2 rounded-md cursor-pointer hover:bg-orange-50 transition whitespace-nowrap">
+          파일 찾기
+          <input
             type="file"
             accept="image/*"
             onChange={handleFileChange}
             className="hidden"
-            />
+          />
         </label>
       </div>
-
 
       {/* 선택 서비스 */}
       <div>
@@ -98,9 +135,7 @@ export default function CreateGatheringForm() {
             <button
               key={key}
               type="button"
-              onClick={() =>
-                setFormData((prev) => ({ ...prev, type: key }))
-              }
+              onClick={() => setFormData((prev) => ({ ...prev, type: key }))}
               className={`border rounded-md p-3 text-left transition ${
                 formData.type === key
                   ? 'bg-black text-white border-black'

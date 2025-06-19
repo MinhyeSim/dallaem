@@ -55,6 +55,7 @@ export default function LoginForm() {
       );
 
       const accessToken = response.data.token;
+      localStorage.setItem('token', accessToken); 
       setToken(accessToken);
       router.push('/gatherings');
     } catch (error: any) {

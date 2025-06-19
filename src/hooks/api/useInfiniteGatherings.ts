@@ -61,6 +61,6 @@ export function useInfiniteGatherings({
       }),
     initialPageParam: 0,
     getNextPageParam: (lastPage, allPages) =>
-      lastPage.length < PAGE_SIZE ? undefined : allPages.length, // offset = allPages.length * size
+      lastPage.length < PAGE_SIZE ? undefined : allPages.length, 
   });
 }
