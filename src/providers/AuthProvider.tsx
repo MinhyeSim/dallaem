@@ -104,9 +104,16 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setUserId(result.data.id);
       }
     } catch (error) {
-      console.error('🚨 fetchUser 실패', error);
+      alert('로그인 정보가 유효하지 않습니다. 다시 로그인 해주세요.');
+  
+      localStorage.clear(); 
+      setToken(null);
+      setUserId(0);
+      setUserName('');
+      router.replace('/login');
     }
   };
+  
 
   const signout = async () => {
     localStorage.removeItem('token');

@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { Heart } from 'lucide-react';
 import { useState } from 'react';
 import { Gathering } from '@/types/gatherings';
@@ -13,6 +14,7 @@ interface Props {
 
 export default function GatheringCard({ gathering }: Props) {
   const {
+    id,
     name,
     location,
     image,
@@ -23,6 +25,7 @@ export default function GatheringCard({ gathering }: Props) {
     canceledAt,
   } = gathering;
 
+  const router = useRouter();
   const [liked, setLiked] = useState(false);
 
   if (canceledAt) return null;
@@ -33,13 +36,18 @@ export default function GatheringCard({ gathering }: Props) {
   const isToday =
     new Date(registrationEnd).toDateString() === new Date().toDateString();
 
+  const handleClick = () => {
+    router.push(`/gatherings/${id}`);
+  };
+
   return (
     <motion.div
+      onClick={handleClick}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       viewport={{ once: true }}
-      className="w-full flex gap-4 p-4 rounded-xl border bg-white hover:shadow-xl transition-shadow duration-300 relative"
+      className="w-full flex gap-4 p-4 rounded-xl border bg-white hover:shadow-xl transition-shadow duration-300 relative cursor-pointer"
     >
       {/* 썸네일 */}
       <div className="relative w-40 h-28 flex-shrink-0 overflow-hidden rounded-lg">
@@ -95,7 +103,7 @@ export default function GatheringCard({ gathering }: Props) {
       <button
         className="absolute top-3 right-3 transition-transform duration-300"
         onClick={(e) => {
-          e.stopPropagation();
+          e.stopPropagation(); // 카드 클릭 방지
           setLiked((prev) => !prev);
         }}
       >
