@@ -41,7 +41,7 @@ export default function Navbar() {
       <div className="max-w-screen-lg mx-auto h-14 px-4 flex justify-between items-center">
         {/* 왼쪽: 로고 + 메뉴 */}
         <section className="flex gap-6 items-center">
-          <Link href="/gatherings">
+          <Link href="/">
             <Image
               src="/logo.svg"
               alt="같이달램 로고"

@@ -53,6 +53,7 @@ export default function Gatherings() {
     isFetchingNextPage,
     isLoading,
     isError,
+    refetch,
   } = useInfiniteGatherings({
     type: selectedType,
     location: location === 'ALL' ? undefined : location,
@@ -95,7 +96,7 @@ export default function Gatherings() {
               </div>
             </div>
 
-            {/* 대분류 + 모임 만들기 버튼 */}
+            {/* 대분류  모임 만들기 버튼 */}
             <div className="flex justify-between items-center mb-2">
               {/* 대분류 버튼 */}
               <div className="flex gap-6 text-sm font-semibold">
@@ -153,7 +154,7 @@ export default function Gatherings() {
 
             {/* 필터바 */}
           <div className="flex justify-between items-center flex-wrap gap-2 mb-6">
-            {/* 좌측 필터: 지역 + 날짜 */}
+            {/* 좌측 필터: 지역  날짜 */}
             <div className="flex gap-3">
               <div className="relative">
                 <select
@@ -212,10 +213,17 @@ export default function Gatherings() {
               </div>
             )}
             <div ref={observerRef} className="h-8" />
-            {isFetchingNextPage && <p className="text-center mt-2">로딩 중...</p>}
+            {isFetchingNextPage && <p className="text-center mt-2">로딩 중</p>}
 
             {/* 모달 열기 */}
-            {isDialogOpen && <CreateGatheringDialog onClose={() => setIsDialogOpen(false)} />}
+            {isDialogOpen && (
+              <CreateGatheringDialog
+                onClose={() => {
+                  setIsDialogOpen(false);
+                  refetch();  
+                }}
+              />
+            )}
       </section>
     </main>
   );

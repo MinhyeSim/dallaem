@@ -52,8 +52,9 @@ export default function GatheringCard({ gathering }: Props) {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
-      );
+      );     
       setCurrentCount((c) => c + 1);
+ 
     } catch (err) {
       console.error('참여 실패:', err);
     }
@@ -96,10 +97,13 @@ export default function GatheringCard({ gathering }: Props) {
 
           <div className="flex items-center gap-2 mt-2 text-xs text-gray-600">
             <span>👤 {currentCount}/{capacity}</span>
-            {isConfirmed && (
-              <span className="text-orange-500 bg-orange-50 border border-orange-200 rounded px-2 py-0.5 font-medium">
-                ✔ 개설확정
-              </span>
+             {isConfirmed && (
+              <Image
+                src="/opening_confirmed.svg"
+                alt="개설확정"
+                width={80}
+                height={80}
+              />
             )}
           </div>
         </div>

@@ -131,12 +131,16 @@ export default async function GatheringDetailPage({ params }: { params: Promise<
           {/* 모집 정원  참여자 */}
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-semibold">모집 정원 {participantCount}명</span>
-
-            {isConfirmed && (
-              <span className="flex items-center gap-1 text-sm text-orange-500 font-medium">
-                <span className="text-xl">✔</span> 개설확정
-              </span>
-            )}
+              {isConfirmed && (
+                <div className="flex items-center">
+                  <Image
+                    src="/opening_confirmed.svg"
+                    alt="개설확정"
+                    width={80}
+                    height={80}
+                  />
+                </div>
+              )}
           </div>
 
           {/* 참여자 이미지 */}

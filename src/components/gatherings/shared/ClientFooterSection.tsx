@@ -23,10 +23,19 @@ export default function ClientFooterSection({
   const router = useRouter();
   const { token, userId } = useAuth();
 
+  // userId가 없으면 key를 빈 문자열로
+  const storageKey = userId
+    ? `joined_${userId}_${gatheringId}`
+    : '';
+
   const [isJoined, setIsJoined] = useState(false);
   useEffect(() => {
-    setIsJoined(localStorage.getItem(`joined_${gatheringId}`) === 'true');
-  }, [gatheringId]);
+    if (!userId) {
+      setIsJoined(false);
+      return;
+    }
+    setIsJoined(localStorage.getItem(storageKey) === 'true');
+  }, [storageKey, userId]);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -51,7 +60,8 @@ export default function ClientFooterSection({
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if ([200, 201].includes(res.status)) {
-        localStorage.setItem(`joined_${gatheringId}`, 'true');
+        // userId 포함된 key로 저장
+        localStorage.setItem(storageKey, 'true');
         setIsJoined(true);
         setDialogMessage('참여 완료되었습니다!');
         setShowDialog(true);
@@ -59,11 +69,11 @@ export default function ClientFooterSection({
       }
     } catch (err: any) {
       const code = err?.response?.data?.code;
-      if (code === 'ALREADY_JOINED') {
-        setDialogMessage('이미 참여한 모임입니다.');
-      } else {
-        setDialogMessage('참여 중 오류가 발생했습니다.');
-      }
+      setDialogMessage(
+        code === 'ALREADY_JOINED'
+          ? '이미 참여한 모임입니다.'
+          : '참여 중 오류가 발생했습니다.'
+      );
       setShowDialog(true);
       router.refresh();
     } finally {
@@ -80,7 +90,8 @@ export default function ClientFooterSection({
         `${process.env.NEXT_PUBLIC_API_URI}/gatherings/${gatheringId}/leave`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      localStorage.removeItem(`joined_${gatheringId}`);
+      // userId 포함된 key로 제거
+      localStorage.removeItem(storageKey);
       setIsJoined(false);
       setDialogMessage('참여가 취소되었습니다.');
       setShowDialog(true);
@@ -94,7 +105,7 @@ export default function ClientFooterSection({
   };
 
   const onCancelMeeting = () => {
-    setDialogMessage('모임이 취소 되었습니다다.');
+    setDialogMessage('모임이 취소 되었습니다.');
     setShowDialog(true);
     router.refresh();
   };
@@ -144,7 +155,7 @@ export default function ClientFooterSection({
               </button>
               {dialogMessage === '로그인 후 참여가 가능합니다.' && (
                 <button
-                  className="bg-blue-500 text-white px-6 py-2 rounded-lg"
+                  className="bg-gray-800 text-white px-6 py-2 rounded-lg"
                   onClick={() => router.push('/login')}
                 >
                   로그인
