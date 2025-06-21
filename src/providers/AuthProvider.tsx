@@ -68,7 +68,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       router.replace(previousPath);
     }
 
-    if (dialogMessage === '로그인 정보가 유효하지 않습니다. 다시 로그인 해주세요.') {
+    if (dialogMessage === '로그인 정보가 유효하지 않습니다. \n다시 로그인 해주세요.') {
       localStorage.clear();
       setToken(null);
       setUserId(0);

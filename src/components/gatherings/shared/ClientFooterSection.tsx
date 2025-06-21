@@ -55,6 +55,7 @@ export default function ClientFooterSection({
         setIsJoined(true);
         setDialogMessage('참여 완료되었습니다!');
         setShowDialog(true);
+        router.refresh();
       }
     } catch (err: any) {
       const code = err?.response?.data?.code;
@@ -64,6 +65,7 @@ export default function ClientFooterSection({
         setDialogMessage('참여 중 오류가 발생했습니다.');
       }
       setShowDialog(true);
+      router.refresh();
     } finally {
       setIsSubmitting(false);
     }
@@ -82,6 +84,7 @@ export default function ClientFooterSection({
       setIsJoined(false);
       setDialogMessage('참여가 취소되었습니다.');
       setShowDialog(true);
+      router.refresh();
     } catch {
       setDialogMessage('참여 취소 중 오류가 발생했습니다.');
       setShowDialog(true);
@@ -93,6 +96,7 @@ export default function ClientFooterSection({
   const onCancelMeeting = () => {
     setDialogMessage('모임이 취소 되었습니다다.');
     setShowDialog(true);
+    router.refresh();
   };
 
   const onShare = () => {

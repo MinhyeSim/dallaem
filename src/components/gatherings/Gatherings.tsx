@@ -11,6 +11,7 @@ import CreateGatheringDialog from './CreateGatheringDialog';
 type MainCategory = 'DALLAEMFIT' | 'WORKATION';
 type SubCategory = 'ALL' | 'OFFICE_STRETCHING' | 'MINDFULNESS' | null;
 
+
 export default function Gatherings() {
   const router = useRouter();
   const { token } = useAuth();

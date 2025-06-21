@@ -29,70 +29,78 @@ export default function Footer({
   onShare,
   onLoginPrompt,
 }: FooterProps) {
-  // 로컬 스토리지 + prop 싱크를 위한 내부 state
   const [isJoinedState, setIsJoinedState] = useState<boolean>(initialJoined);
 
-  // 마운트 혹은 gatheringId 변경 시 로컬 스토리지 읽어오기
   useEffect(() => {
     const joinedFlag = localStorage.getItem(`joined_${gatheringId}`) === 'true';
     setIsJoinedState(joinedFlag);
   }, [gatheringId]);
 
   return (
-    <div className="flex items-center justify-center w-full">
-      {/* 모임 주최자 */}
-      {isOwner ? (
-        <div className="flex gap-4 w-full">
-          <button
-            onClick={onShare}
-            className="flex-1 bg-gray-100 text-gray-800 py-3 rounded-lg hover:bg-gray-200 transition"
-          >
-            공유하기
-          </button>
-          <button
-            onClick={onCancelMeeting}
-            className="flex-1 bg-red-100 text-red-600 py-3 rounded-lg hover:bg-red-200 transition"
-          >
-            모임 취소하기
-          </button>
+      <div className="max-w-5xl mx-auto flex items-center justify-between">
+        
+        <div className="text-center sm:text-left">
+          <h3 className="text-lg font-bold">
+            더 건강한 나와 팀을 위한 프로그램 🏃‍♂️,
+          </h3>
+          <p className="text-sm text-gray-600 mt-1">
+            국내 최고 웰니스 전문가와 프로그램을 통해 지친 몸과 마음을 회복해봐요
+          </p>
         </div>
-
-      ) : !isLoggedIn ? (
-        <button
-          onClick={onLoginPrompt}
-          className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600 transition"
-        >
-          참여하기
-        </button>
-
-      ) : isJoinedState ? (
-        <button
-          onClick={() => {
-            onCancelJoin();
-            setIsJoinedState(false);
-          }}
-          disabled={isSubmitting}
-          className="w-full border border-orange-500 text-orange-500 py-3 rounded-lg hover:bg-orange-50 transition"
-        >
-          참여 취소하기
-        </button>
-
-      ) : (
-        <button
-          onClick={() => {
-            onJoin();
-            setIsJoinedState(true);
-          }}
-          disabled={isFull || isSubmitting}
-          className={`w-full py-3 rounded-lg transition ${
-            isFull || isSubmitting
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-orange-500 text-white hover:bg-orange-600'
-          }`}
-        >
-          {isSubmitting ? '참여 중' : '참여하기'}
-        </button>
-      )}
-    </div>
-  );
+        
+        {isOwner ? (
+          <div className="flex gap-4">
+            <button
+              onClick={onShare}
+              className="flex-1 bg-gray-100 text-gray-800 py-2 rounded-xl hover:bg-gray-200 transition"
+            >
+              공유하기
+            </button>
+            <button
+              onClick={onCancelMeeting}
+              className="flex-1 bg-red-100 text-red-600 py-2 rounded-xl hover:bg-red-200 transition"
+            >
+              모임 취소하기
+            </button>
+          </div>
+  
+        ) : !isLoggedIn ? (
+          <button
+            onClick={onLoginPrompt}
+            className="px-6 py-2 rounded-xl bg-orange-500 text-white hover:bg-orange-600 transition"
+          >
+            참여하기
+          </button>
+  
+        ) : isJoinedState ? (
+          <button
+            onClick={() => {
+              onCancelJoin();
+              setIsJoinedState(false);
+            }}
+            disabled={isSubmitting}
+            className="px-6 py-2 rounded-xl border border-orange-500 text-orange-500 hover:bg-orange-50 transition"
+          >
+            참여 취소하기
+          </button>
+  
+        ) : (
+          <button
+            onClick={() => {
+              onJoin();
+              setIsJoinedState(true);
+            }}
+            disabled={isFull || isSubmitting}
+            className={`px-6 py-2 rounded-xl font-semibold transition ${
+              isFull || isSubmitting
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-orange-500 text-white hover:bg-orange-600'
+            }`}
+          >
+            {isSubmitting ? '참여 중' : '참여하기'}
+          </button>
+        )}
+  
+      </div>
+  );  
 }
