@@ -79,14 +79,14 @@ export default function GatheringCard({ gathering }: Props) {
       {/* 정보 영역 */}
       <div className="flex flex-col justify-center flex-1 py-1 space-y-4">
         <div>
-          <div className="text-sm font-semibold text-gray-800">
+          <div className="text-sm font-semibold text-gray-800 py-1">
             {name}
-            <span className="ml-2 text-gray-500 font-normal text-xs">
+            <span className="ml-2 text-gray-600 font-nomal text-xs">
               | {location}
             </span>
           </div>
 
-          <div className="flex gap-2 mt-1">
+          <div className="flex gap-2 mt-1 py-1">
             <span className="text-xs px-2 py-1 bg-gray-800 text-white rounded">
               {format(new Date(dateTime), 'M월 d일')}
             </span>
@@ -95,7 +95,7 @@ export default function GatheringCard({ gathering }: Props) {
             </span>
           </div>
 
-          <div className="flex items-center gap-2 mt-2 text-xs text-gray-600">
+          <div className="flex items-center gap-2 text-xs text-gray-600 mt-1">
             <span>👤 {currentCount}/{capacity}</span>
              {isConfirmed && (
               <Image
@@ -108,11 +108,11 @@ export default function GatheringCard({ gathering }: Props) {
           </div>
         </div>
 
-        <div className="flex items-center gap-4 mt-2">
-          <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+        <div className="flex items-center gap-4 ">
+          <div className="flex-1 h-1.5 rounded-full bg-orange-50 overflow-hidden">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
-                isClosed ? 'bg-orange-700' : 'bg-orange-500'
+                isClosed ? 'bg-orange-500' : 'bg-orange-400'
               }`}
               style={{ width: `${progress}%` }}
             />
