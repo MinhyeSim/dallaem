@@ -11,8 +11,8 @@ import {
 } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
+import Dialog from '@/components/shared/ui/Dialog';
 
-// 타입
 type AuthContextType = {
   token: string | null;
   loginModalOpen: boolean;
@@ -43,6 +43,10 @@ export const AuthContext = createContext<AuthContextType>({
 });
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const queryClient = useQueryClient();
+
   const [token, setToken] = useState<string | null>(null);
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState(0);
@@ -50,9 +54,28 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [isLoading, setIsLoading] = useState(true);
   const [previousPath, setPreviousPath] = useState<string>('/');
 
-  const queryClient = useQueryClient();
-  const router = useRouter();
-  const pathname = usePathname();
+  const [showDialog, setShowDialog] = useState(false);
+  const [dialogMessage, setDialogMessage] = useState('');
+
+  const handleDialogClose = () => {
+    setShowDialog(false);
+
+    if (dialogMessage === '회원가입이 완료되었습니다.') {
+      router.replace('/login');
+    }
+
+    if (dialogMessage === '로그인에 성공했습니다.') {
+      router.replace(previousPath);
+    }
+
+    if (dialogMessage === '로그인 정보가 유효하지 않습니다. 다시 로그인 해주세요.') {
+      localStorage.clear();
+      setToken(null);
+      setUserId(0);
+      setUserName('');
+      router.replace('/login');
+    }
+  };
 
   const signup = async (
     email: string,
@@ -68,11 +91,14 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         companyName,
       });
       if (result.status === 200) {
-        alert('회원가입이 완료되었습니다.');
-        router.replace('/login');
+        setDialogMessage('회원가입이 완료되었습니다.');
+        setShowDialog(true);
       }
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      setDialogMessage(
+        error.response?.data?.message || '회원가입 중 오류가 발생했습니다.'
+      );
+      setShowDialog(true);
     }
   };
 
@@ -80,14 +106,17 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     try {
       const result = await axios.post('/api/auth/signin', { email, password });
       if (result.status === 200) {
-        alert('로그인에 성공했습니다.');
         localStorage.setItem('token', result.data.token);
         setToken(result.data.token);
         await fetchUser(result.data.token);
-        router.replace(previousPath);
+        setDialogMessage('로그인에 성공했습니다.');
+        setShowDialog(true);
       }
-    } catch (error) {
-      throw error;
+    } catch (error: any) {
+      setDialogMessage(
+        error.response?.data?.message || '로그인 중 오류가 발생했습니다.'
+      );
+      setShowDialog(true);
     }
   };
 
@@ -104,16 +133,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setUserId(result.data.id);
       }
     } catch (error) {
-      alert('로그인 정보가 유효하지 않습니다. 다시 로그인 해주세요.');
-  
-      localStorage.clear(); 
-      setToken(null);
-      setUserId(0);
-      setUserName('');
-      router.replace('/login');
+      setDialogMessage('로그인 정보가 유효하지 않습니다. \n다시 로그인 해주세요.');
+      setShowDialog(true);
     }
   };
-  
 
   const signout = async () => {
     localStorage.removeItem('token');
@@ -129,13 +152,16 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     await axios.post('/api/auth/signout');
   };
 
-  
+  useEffect(() => {
+    setPreviousPath(pathname);
+  }, [pathname]);
+
   useEffect(() => {
     const checkAuth = async () => {
       const storedToken = localStorage.getItem('token');
       if (storedToken) {
         setToken(storedToken);
-        await fetchUser(storedToken); 
+        await fetchUser(storedToken);
       }
       setIsLoading(false);
     };
@@ -157,6 +183,22 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       }}
     >
       {children}
+
+      {showDialog && (
+        <Dialog onClose={handleDialogClose}>
+          <div className="flex flex-col items-center justify-center py-6 px-4">
+            <p className="text-center text-base font-semibold mb-6">
+              {dialogMessage}
+            </p>
+            <button
+              className="bg-orange-500 text-white px-6 py-2 rounded-lg"
+              onClick={handleDialogClose}
+            >
+              확인
+            </button>
+          </div>
+        </Dialog>
+      )}
     </AuthContext.Provider>
   );
 }

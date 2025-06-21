@@ -10,16 +10,20 @@ export default function Dialog({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-xl relative w-full max-w-xs">
+    <div className="fixed inset-0 bg-black/40 z-[9999] flex items-center justify-center px-4">
+      <div className="bg-white rounded-xl relative w-full max-w-sm min-h-[100px] p-6 shadow-xl">
         <button
-          className="absolute top-4 right-4 text-gray-700"
+          className="absolute top-3 right-3 text-gray-700 hover:text-black"
           onClick={onClose}
         >
           <X size={20} />
         </button>
+  
+      <div className="text-center">
         {children}
       </div>
     </div>
+  </div>
+  
   );
 }

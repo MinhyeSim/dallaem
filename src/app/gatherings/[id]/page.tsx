@@ -4,11 +4,19 @@ import { format } from 'date-fns';
 import { Metadata } from 'next';
 import { BASE_URL } from '@/lib/config';
 import ClientFooterSection from '@/components/gatherings/shared/ClientFooterSection';
+import { cookies } from 'next/headers';
+import { jwtDecode } from 'jwt-decode';
 
 
 export const metadata: Metadata = {
   title: '모임 상세',
 };
+
+interface JwtPayload {
+  userId: number;
+  teamId: string;
+}
+
 
 export const dynamic = 'force-dynamic';
 
@@ -21,14 +29,11 @@ async function getGathering(id: string) {
 }
 
 
-export default async function GatheringDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
-  const id = params.id;
-
-  const gathering = await getGathering(id);
+export default async function GatheringDetailPage({ params }: { params: Promise<{ id : string }>}) {
+  // const id = params.id;
+  const { id } = await params;
+  const gathering = await getGathering(id); 
+  console.log('🧾 gathering response:', gathering);
   if (!gathering) return notFound();
 
   const {
@@ -49,6 +54,27 @@ export default async function GatheringDetailPage({
   const formattedTime = format(new Date(dateTime), 'HH:mm');
 
   const dummyProfiles = ['/profile.svg', '/profile.svg', '/profile.svg', '/profile.svg', '/profile.svg'];
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+
+
+
+  let currentUserId: number | null = null;
+
+  if (token) {
+    try {
+      const decoded = jwtDecode<JwtPayload>(token);
+      currentUserId = decoded.userId;
+    } catch (e) {
+      console.error('❌ JWT 디코딩 실패:', e);
+    }
+  }
+
+  const isUserJoined =
+    currentUserId !== null &&
+    Array.isArray(gathering.participants) &&
+    gathering.participants.includes(currentUserId);
+
 
 
   return (

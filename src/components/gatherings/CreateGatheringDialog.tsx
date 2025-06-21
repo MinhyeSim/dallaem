@@ -10,7 +10,6 @@ export default function CreateGatheringDialog({ onClose }: { onClose: () => void
   const router = useRouter();
 
   useEffect(() => {
-    // ESC 키 누르면 모달 닫힘
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };

@@ -49,13 +49,14 @@ export default function LoginForm() {
         {
           headers: {
             'Content-Type': 'application/json',
-            'x-team-id': process.env.NEXT_PUBLIC_API_URI!,
+            'x-team-id': process.env.NEXT_PUBLIC_TEAM_ID!,
           },
         }
       );
 
       const accessToken = response.data.token;
-      localStorage.setItem('token', accessToken); 
+      localStorage.setItem('token', accessToken);
+      document.cookie = `token=${accessToken}; path=/; max-age=86400`;
       setToken(accessToken);
       router.push('/gatherings');
     } catch (error: any) {
@@ -97,6 +98,7 @@ export default function LoginForm() {
           {...register('password')}
           isSubmitted={isSubmitted}
           handlePasswordVisibility={() => setIsPasswordVisible((prev) => !prev)}
+          isPasswordField={true}
           isPasswordVisible={isPasswordVisible}
           error={errors.password?.message}
           errorResponseMessage={errorResponseMessage}

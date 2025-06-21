@@ -1,9 +1,9 @@
-import Image from "next/image";
+import Gatherings from '@/components/gatherings/Gatherings';
 
-export default function Home() {
+export default function HomePage() {
   return (
-    <h1 className="text-3xl font-bold underline">
-      Hello world!
-    </h1>
+    <main className="max-w-7xl mx-auto px-4 py-8">
+      <Gatherings />
+    </main>
   );
 }
