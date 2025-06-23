@@ -5,7 +5,7 @@ import { AuthContext } from '@/providers/AuthProvider';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useRouter } from 'next/navigation';
 import InputField from './shared/ui/InputField';
 import FormFooter from './shared/ui/FormFooter';
@@ -53,22 +53,28 @@ export default function LoginForm() {
           },
         }
       );
-
+    
       const accessToken = response.data.token;
       localStorage.setItem('token', accessToken);
       document.cookie = `token=${accessToken}; path=/; max-age=86400`;
       setToken(accessToken);
       router.push('/gatherings');
-    } catch (error: any) {
-      const message = error?.response?.data?.message;
-
-      if (message?.includes('존재하지 않는 아이디')) {
-        setError('email', { message: '존재하지 않는 아이디입니다.' });
-      } else if (message?.includes('비밀번호')) {
-        setError('password', { message: '비밀번호가 아이디와 일치하지 않습니다.' });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+    
+        if (message?.includes('존재하지 않는 아이디')) {
+          setError('email', { message: '존재하지 않는 아이디입니다.' });
+        } else if (message?.includes('비밀번호')) {
+          setError('password', { message: '비밀번호가 아이디와 일치하지 않습니다.' });
+        } else {
+          setErrorResponseMessage('로그인 처리 중 오류가 발생했습니다.');
+          console.error('로그인 실패:', message);
+        }
       } else {
-        setErrorResponseMessage('로그인 처리 중 오류가 발생했습니다.');
-        console.error('로그인 실패:', message);
+        // AxiosError 외 예외 처리 (예: 네트워크 실패, 런타임 에러 등)
+        setErrorResponseMessage('알 수 없는 오류가 발생했습니다.');
+        console.error('예상치 못한 에러:', error);
       }
     }
   };

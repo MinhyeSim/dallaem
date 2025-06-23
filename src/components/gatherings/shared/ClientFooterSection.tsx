@@ -3,7 +3,7 @@
 import { useAuth } from '@/providers/AuthProvider';
 import Footer from '@/components/gatherings/shared/Footer';
 import { useRouter } from 'next/navigation';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useState, useEffect } from 'react';
 import Dialog from '@/components/shared/ui/Dialog';
 
@@ -59,8 +59,8 @@ export default function ClientFooterSection({
         null,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+    
       if ([200, 201].includes(res.status)) {
-        // userId 포함된 key로 저장
         localStorage.setItem(storageKey, 'true');
         setIsJoined(true);
         setDialogMessage('참여 완료되었습니다!');
@@ -68,13 +68,18 @@ export default function ClientFooterSection({
         setShowDialog(true);
         router.refresh();
       }
-    } catch (err: any) {
-      const code = err?.response?.data?.code;
-      setDialogMessage(
-        code === 'ALREADY_JOINED'
-          ? '이미 참여한 모임입니다.'
-          : '참여 중 오류가 발생했습니다.'
-      );
+    } catch (err: unknown) {
+      if (axios.isAxiosError(err)) {
+        const code = err.response?.data?.code;
+        setDialogMessage(
+          code === 'ALREADY_JOINED'
+            ? '이미 참여한 모임입니다.'
+            : '참여 중 오류가 발생했습니다.'
+        );
+      } else {
+        setDialogMessage('알 수 없는 오류가 발생했습니다.');
+        console.error('예상치 못한 오류:', err);
+      }
       setShowDialog(true);
       router.refresh();
     } finally {

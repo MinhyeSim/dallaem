@@ -8,6 +8,8 @@ import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/providers/AuthProvider';
 import InputField from './shared/ui/InputField';
 import FormFooter from './shared/ui/FormFooter';
+import axios, { AxiosError } from 'axios';
+
 
 const signupFormSchema = z
   .object({
@@ -49,12 +51,19 @@ export default function RegisterForm() {
     try {
       await signup(data.email, data.password, data.name, data.companyName);
       router.push('/login');
-    } catch (error: any) {
-      const message = error?.response?.data?.message;
-      if (message?.includes('이미 존재하는')) {
-        setError('email', { message: '중복된 이메일입니다.' });
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+  
+        if (typeof message === 'string' && message.includes('이미 존재하는')) {
+          setError('email', { message: '중복된 이메일입니다.' });
+        } else {
+          alert('회원가입 중 오류가 발생했습니다.');
+          console.error('회원가입 오류:', message);
+        }
       } else {
-        alert('회원가입 중 오류가 발생했습니다.');
+        alert('예상치 못한 오류가 발생했습니다.');
+        console.error('알 수 없는 에러:', error);
       }
     }
   };

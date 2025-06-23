@@ -1,17 +1,11 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  createContext,
-  useState,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useContext,
-} from 'react';
+import { createContext, useState, Dispatch,  SetStateAction, useEffect, useContext } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import Dialog from '@/components/shared/ui/Dialog';
+
 
 type AuthContextType = {
   token: string | null;
@@ -90,14 +84,24 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         name,
         companyName,
       });
+  
       if (result.status === 200) {
         setDialogMessage('회원가입이 완료되었습니다.');
         setShowDialog(true);
       }
-    } catch (error: any) {
-      setDialogMessage(
-        error.response?.data?.message || '회원가입 중 오류가 발생했습니다.'
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+        setDialogMessage(
+          typeof message === 'string'
+            ? message
+            : '회원가입 중 오류가 발생했습니다.'
+        );
+      } else {
+        setDialogMessage('알 수 없는 오류가 발생했습니다.');
+        console.error('회원가입 실패:', error);
+      }
+  
       setShowDialog(true);
     }
   };
@@ -105,6 +109,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const signin = async (email: string, password: string) => {
     try {
       const result = await axios.post('/api/auth/signin', { email, password });
+  
       if (result.status === 200) {
         localStorage.setItem('token', result.data.token);
         setToken(result.data.token);
@@ -112,10 +117,19 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setDialogMessage('로그인에 성공했습니다.');
         setShowDialog(true);
       }
-    } catch (error: any) {
-      setDialogMessage(
-        error.response?.data?.message || '로그인 중 오류가 발생했습니다.'
-      );
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const message = error.response?.data?.message;
+        setDialogMessage(
+          typeof message === 'string'
+            ? message
+            : '로그인 중 오류가 발생했습니다.'
+        );
+      } else {
+        setDialogMessage('알 수 없는 오류가 발생했습니다.');
+        console.error('로그인 실패:', error);
+      }
+  
       setShowDialog(true);
     }
   };
