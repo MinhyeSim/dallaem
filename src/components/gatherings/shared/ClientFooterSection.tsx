@@ -39,7 +39,7 @@ export default function ClientFooterSection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
-  const [_, setCurrentCount] = useState(participantCount);
+  const setCurrentCount = useState(participantCount)[1];
 
   const isLoggedIn = !!token;
   const isOwner = userId === createdBy;

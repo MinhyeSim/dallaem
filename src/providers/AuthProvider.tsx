@@ -45,7 +45,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState(0);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [_, setIsLoading] = useState(true);
+  const setIsLoading = useState(true)[1];
   const [previousPath, setPreviousPath] = useState<string>('/');
 
   const [showDialog, setShowDialog] = useState(false);
@@ -145,6 +145,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setUserId(result.data.id);
       }
     } catch (error) {
+      console.error('❌ 사용자 정보 요청 실패:', error);
       setDialogMessage('로그인 정보가 유효하지 않습니다. \n다시 로그인 해주세요.');
       setShowDialog(true);
     }

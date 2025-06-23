@@ -36,7 +36,6 @@ export default function RegisterForm() {
     register,
     handleSubmit,
     setError,
-    watch,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm<SignupFormSchemaType>({
     resolver: zodResolver(signupFormSchema),
