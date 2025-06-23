@@ -23,7 +23,6 @@ export default function ClientFooterSection({
   const router = useRouter();
   const { token, userId } = useAuth();
 
-  // userId가 없으면 key를 빈 문자열로
   const storageKey = userId
     ? `joined_${userId}_${gatheringId}`
     : '';
@@ -40,6 +39,7 @@ export default function ClientFooterSection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
+  const [currentCount, setCurrentCount] = useState(participantCount);
 
   const isLoggedIn = !!token;
   const isOwner = userId === createdBy;
@@ -64,6 +64,7 @@ export default function ClientFooterSection({
         localStorage.setItem(storageKey, 'true');
         setIsJoined(true);
         setDialogMessage('참여 완료되었습니다!');
+        setCurrentCount((prev) => prev + 1);
         setShowDialog(true);
         router.refresh();
       }
@@ -90,10 +91,10 @@ export default function ClientFooterSection({
         `${process.env.NEXT_PUBLIC_API_URI}/gatherings/${gatheringId}/leave`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      // userId 포함된 key로 제거
       localStorage.removeItem(storageKey);
       setIsJoined(false);
       setDialogMessage('참여가 취소되었습니다.');
+      setCurrentCount((prev) => prev - 1);
       setShowDialog(true);
       router.refresh();
     } catch {

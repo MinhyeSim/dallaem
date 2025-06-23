@@ -44,7 +44,6 @@ export default async function GatheringDetailPage({ params }: { params: Promise<
   console.log('🧾 gathering response:', gathering);
   if (!gathering) return notFound();
 
-  const participants = await getParticipants(id);
   const {
   name,
   dateTime,
@@ -77,13 +76,6 @@ export default async function GatheringDetailPage({ params }: { params: Promise<
       console.error('❌ JWT 디코딩 실패:', e);
     }
   }
-
-  const isUserJoined =
-    currentUserId !== null &&
-    Array.isArray(gathering.participants) &&
-    gathering.participants.includes(currentUserId);
-
-
 
   return (
   <main className="min-h-screen bg-gray-100 px-4">

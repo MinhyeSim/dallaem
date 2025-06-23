@@ -54,6 +54,7 @@ export default function GatheringCard({ gathering }: Props) {
         }
       );     
       setCurrentCount((c) => c + 1);
+      router.refresh();
  
     } catch (err) {
       console.error('참여 실패:', err);

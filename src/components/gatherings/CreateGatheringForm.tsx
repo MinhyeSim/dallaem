@@ -7,10 +7,10 @@ import { useAuth } from '@/providers/AuthProvider';
 export default function CreateGatheringForm({ onClose }: { onClose: () => void }) {
   const { token } = useAuth();
 
+  const { mutate: createGathering, isPending } = useCreateGathering(token ?? '');
+  
   if (!token) return null;
-
-  const { mutate: createGathering, isPending } = useCreateGathering(token);
-
+  
   const [formData, setFormData] = useState({
     name: '',
     location: '',
