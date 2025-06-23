@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { createContext, useState, Dispatch,  SetStateAction, useEffect, useContext } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import Dialog from '@/components/shared/ui/Dialog';
 
 
@@ -45,7 +45,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState(0);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [_, setIsLoading] = useState(true);
   const [previousPath, setPreviousPath] = useState<string>('/');
 
   const [showDialog, setShowDialog] = useState(false);
@@ -99,7 +99,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         );
       } else {
         setDialogMessage('알 수 없는 오류가 발생했습니다.');
-        console.error('회원가입 실패:', error);
       }
   
       setShowDialog(true);
@@ -127,7 +126,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         );
       } else {
         setDialogMessage('알 수 없는 오류가 발생했습니다.');
-        console.error('로그인 실패:', error);
       }
   
       setShowDialog(true);

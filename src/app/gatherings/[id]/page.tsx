@@ -19,13 +19,6 @@ interface JwtPayload {
   teamId: string;
 }
 
-async function getParticipants(id: string) {
-  const res = await fetch(`${BASE_URL}/gatherings/${id}/participants`, {
-    next: { revalidate: 60 },
-  });
-  if (!res.ok) return [];
-  return res.json() as Promise<Array<{ id: number; avatarUrl: string }>>;
-}
 
 export const dynamic = 'force-dynamic';
 
@@ -60,22 +53,6 @@ export default async function GatheringDetailPage({ params }: { params: Promise<
     new Date(registrationEnd).toDateString() === new Date().toDateString();
   const formattedDate = format(new Date(dateTime), 'M월 d일');
   const formattedTime = format(new Date(dateTime), 'HH:mm');
-
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
-
-
-
-  let currentUserId: number | null = null;
-
-  if (token) {
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-      currentUserId = decoded.userId;
-    } catch (e) {
-      console.error('❌ JWT 디코딩 실패:', e);
-    }
-  }
 
   return (
   <main className="min-h-screen bg-gray-100 px-4">

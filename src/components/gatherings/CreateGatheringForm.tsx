@@ -6,11 +6,7 @@ import { useAuth } from '@/providers/AuthProvider';
 
 export default function CreateGatheringForm({ onClose }: { onClose: () => void }) {
   const { token } = useAuth();
-
-  const { mutate: createGathering, isPending } = useCreateGathering(token ?? '');
-  
-  if (!token) return null;
-  
+  const { mutate: createGathering } = useCreateGathering(token ?? '');
   const [formData, setFormData] = useState({
     name: '',
     location: '',
@@ -20,6 +16,8 @@ export default function CreateGatheringForm({ onClose }: { onClose: () => void }
     dateTime: '',
     registrationEnd: '',
   });
+
+  if (!token) return null;
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

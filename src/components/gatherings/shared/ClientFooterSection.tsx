@@ -3,7 +3,7 @@
 import { useAuth } from '@/providers/AuthProvider';
 import Footer from '@/components/gatherings/shared/Footer';
 import { useRouter } from 'next/navigation';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import { useState, useEffect } from 'react';
 import Dialog from '@/components/shared/ui/Dialog';
 
@@ -39,7 +39,7 @@ export default function ClientFooterSection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
-  const [currentCount, setCurrentCount] = useState(participantCount);
+  const [_, setCurrentCount] = useState(participantCount);
 
   const isLoggedIn = !!token;
   const isOwner = userId === createdBy;
@@ -78,7 +78,6 @@ export default function ClientFooterSection({
         );
       } else {
         setDialogMessage('알 수 없는 오류가 발생했습니다.');
-        console.error('예상치 못한 오류:', err);
       }
       setShowDialog(true);
       router.refresh();

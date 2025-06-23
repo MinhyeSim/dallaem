@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/providers/AuthProvider';
 import InputField from './shared/ui/InputField';
 import FormFooter from './shared/ui/FormFooter';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 
 
 const signupFormSchema = z
@@ -41,11 +41,6 @@ export default function RegisterForm() {
   } = useForm<SignupFormSchemaType>({
     resolver: zodResolver(signupFormSchema),
   });
-
-  const name = watch('name');
-  const email = watch('email');
-  const companyName = watch('companyName');
-  const password = watch('password');
 
   const onSubmit = async (data: SignupFormSchemaType) => {
     try {
