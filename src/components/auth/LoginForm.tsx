@@ -28,14 +28,10 @@ export default function LoginForm() {
     register,
     handleSubmit,
     setError,
-    watch,
     formState: { errors, isSubmitting, isSubmitted },
   } = useForm<SigninFormSchemaType>({
     resolver: zodResolver(signinFormSchema),
   });
-
-  const email = watch('email');
-  const password = watch('password');
 
   const onSubmit = async (data: SigninFormSchemaType) => {
     setErrorResponseMessage(null);
@@ -69,7 +65,6 @@ export default function LoginForm() {
           console.error('로그인 실패:', message);
         }
       } else {
-        // AxiosError 외 예외 처리 (예: 네트워크 실패, 런타임 에러 등)
         setErrorResponseMessage('알 수 없는 오류가 발생했습니다.');
         console.error('예상치 못한 에러:', error);
       }

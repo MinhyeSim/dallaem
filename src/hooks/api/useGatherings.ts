@@ -1,4 +1,3 @@
-// hooks/api/useGatherings.ts
 import { useQuery } from '@tanstack/react-query';
 import apiClient from '@/lib/api/axios';
 import { Gathering, GatheringType, GatheringLocation, SortBy, SortOrder } from '@/types/gatherings';

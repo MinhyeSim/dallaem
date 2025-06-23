@@ -21,7 +21,6 @@ export default function Gatherings() {
   const { token } = useAuth();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // 로그인 후 모달 자동 오픈 처리
   useEffect(() => {
     if (token && sessionStorage.getItem('openCreateModal') === 'true') {
       setIsDialogOpen(true);
@@ -31,7 +30,6 @@ export default function Gatherings() {
 
   const handleOpenCreate = () => {
     if (!token) {
-      // 비로그인 상태면 로그인 페이지로, 돌아와서 모달 열리도록
       sessionStorage.setItem('openCreateModal', 'true');
       router.push('/login');
     } else {
@@ -39,7 +37,6 @@ export default function Gatherings() {
     }
   };
 
-  // 필터/정렬 상태
   const [mainCategory, setMainCategory] = useState<MainCategory>('DALLAEMFIT');
   const [subCategory, setSubCategory] = useState<SubCategory>('ALL');
   const [location, setLocation] = useState<GatheringLocation | 'ALL'>('ALL');
@@ -53,7 +50,6 @@ export default function Gatherings() {
       ? undefined
       : subCategory;
 
-  // 무한 스크롤 훅
   const {
     data,
     fetchNextPage,

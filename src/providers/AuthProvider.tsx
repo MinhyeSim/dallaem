@@ -179,7 +179,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setIsLoading(false);
     };
     checkAuth();
-  }, []);
+  }, [setIsLoading]);
 
   return (
     <AuthContext.Provider

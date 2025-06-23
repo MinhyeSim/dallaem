@@ -79,7 +79,6 @@ export default function CreateGatheringForm({ onClose }: { onClose: () => void }
 
   const handleDialogClose = () => {
     setShowDialog(false);
-    // 성공 메시지일 경우 폼도 닫아 줍니다
     if (dialogMessage === '모임이 성공적으로 생성되었습니다!') {
       onClose();
     }
