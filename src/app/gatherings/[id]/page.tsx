@@ -26,7 +26,6 @@ async function getGathering(id: string) {
 export default async function GatheringDetailPage({ params }: { params: Promise<{ id : string }>}) {
   const { id } = await params;
   const gathering = await getGathering(id); 
-  console.log('🧾 gathering response:', gathering);
   if (!gathering) return notFound();
 
   const {

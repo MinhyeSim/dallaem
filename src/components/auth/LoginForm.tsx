@@ -37,9 +37,6 @@ export default function LoginForm() {
   const email = watch('email');
   const password = watch('password');
 
-  console.log('email:', email);
-  console.log('password:', password);
-
   const onSubmit = async (data: SigninFormSchemaType) => {
     setErrorResponseMessage(null);
     try {
