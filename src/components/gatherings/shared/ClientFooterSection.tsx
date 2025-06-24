@@ -104,7 +104,7 @@ export default function ClientFooterSection({
 
   const onCancelMeeting = async () => {
     if (!token) return onLoginPrompt();
-
+  
     try {
       setIsSubmitting(true);
       const res = await axios.put(
@@ -117,13 +117,15 @@ export default function ClientFooterSection({
         setShowDialog(true);
         router.push('/gatherings');
       }
-    } catch (err) {
+    } catch (error: unknown) {
+      console.error(error);
       setDialogMessage('모임 취소 중 오류가 발생했습니다.');
       setShowDialog(true);
     } finally {
       setIsSubmitting(false);
     }
   };
+  
 
   const onShare = () => {
     setDialogMessage('공유하기 기능을 호출합니다.');

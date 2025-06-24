@@ -26,7 +26,6 @@ export default function Footer({
   onJoin,
   onCancelJoin,
   onCancelMeeting,
-  onShare,
   onLoginPrompt,
 }: FooterProps) {
   const [isJoinedState, setIsJoinedState] = useState<boolean>(initialJoined);
