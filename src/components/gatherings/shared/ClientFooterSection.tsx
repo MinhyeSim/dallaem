@@ -102,9 +102,27 @@ export default function ClientFooterSection({
     }
   };
 
-  const onCancelMeeting = () => {
-    setDialogMessage('모임이 취소 되었습니다.');
-    setShowDialog(true);
+  const onCancelMeeting = async () => {
+    if (!token) return onLoginPrompt();
+
+    try {
+      setIsSubmitting(true);
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URI}/gatherings/${gatheringId}/cancel`,
+        null,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (res.status === 200) {
+        setDialogMessage('모임이 취소되었습니다.');
+        setShowDialog(true);
+        router.push('/gatherings');
+      }
+    } catch (err) {
+      setDialogMessage('모임 취소 중 오류가 발생했습니다.');
+      setShowDialog(true);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const onShare = () => {
@@ -136,10 +154,13 @@ export default function ClientFooterSection({
           />
         </div>
       </div>
+
       {showDialog && (
         <Dialog onClose={handleDialogClose}>
           <div className="flex flex-col items-center justify-center py-6 px-4">
-            <p className="text-center text-base font-semibold mb-6">{dialogMessage}</p>
+            <p className="text-center text-base font-semibold mb-6">
+              {dialogMessage}
+            </p>
             <div className="flex gap-4">
               <button
                 className="bg-orange-500 text-white px-6 py-2 rounded-lg"

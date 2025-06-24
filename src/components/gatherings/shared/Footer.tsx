@@ -51,14 +51,8 @@ export default function Footer({
         {isOwner ? (
           <div className="flex gap-4">
             <button
-              onClick={onShare}
-              className="flex-1 bg-gray-100 text-gray-800 py-2 rounded-xl hover:bg-gray-200 transition"
-            >
-              공유하기
-            </button>
-            <button
               onClick={onCancelMeeting}
-              className="flex-1 bg-red-100 text-red-600 py-2 rounded-xl hover:bg-red-200 transition"
+              className="px-6 py-2 bg-red-100 text-red-600 rounded-xl text-lg hover:bg-red-200 transition"
             >
               모임 취소하기
             </button>

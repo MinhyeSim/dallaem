@@ -221,7 +221,9 @@ export default function Gatherings() {
         {data && (
           <div className="flex flex-col gap-6">
             {data.pages.flatMap((page) =>
-              page.map((g) => <GatheringCard key={g.id} gathering={g} />)
+              page
+                .filter((g) => g.canceledAt === null)
+                .map((g) => <GatheringCard key={g.id} gathering={g} />)
             )}
           </div>
         )}
