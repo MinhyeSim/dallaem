@@ -12,6 +12,7 @@ interface Props {
   createdBy: number;
   participantCount: number;
   capacity: number;
+  setCurrentCount: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export default function ClientFooterSection({
@@ -19,6 +20,7 @@ export default function ClientFooterSection({
   createdBy,
   participantCount,
   capacity,
+  setCurrentCount,
 }: Props) {
   const router = useRouter();
   const { token, userId } = useAuth();
@@ -39,7 +41,6 @@ export default function ClientFooterSection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
-  const setCurrentCount = useState(participantCount)[1];
 
   const isLoggedIn = !!token;
   const isOwner = userId === createdBy;
@@ -51,7 +52,6 @@ export default function ClientFooterSection({
 
   const onJoin = async () => {
     if (!token) return onLoginPrompt();
-
     try {
       setIsSubmitting(true);
       const res = await axios.post(
@@ -59,28 +59,23 @@ export default function ClientFooterSection({
         null,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-    
       if ([200, 201].includes(res.status)) {
         localStorage.setItem(storageKey, 'true');
         setIsJoined(true);
         setDialogMessage('참여 완료되었습니다!');
-        setCurrentCount((prev) => prev + 1);
+        setCurrentCount(prev => prev + 1);
         setShowDialog(true);
-        router.refresh();
       }
     } catch (err: unknown) {
       if (axios.isAxiosError(err)) {
         const code = err.response?.data?.code;
         setDialogMessage(
-          code === 'ALREADY_JOINED'
-            ? '이미 참여한 모임입니다.'
-            : '참여 중 오류가 발생했습니다.'
+          code === 'ALREADY_JOINED' ? '이미 참여한 모임입니다.' : '참여 중 오류가 발생했습니다.'
         );
       } else {
         setDialogMessage('알 수 없는 오류가 발생했습니다.');
       }
       setShowDialog(true);
-      router.refresh();
     } finally {
       setIsSubmitting(false);
     }
@@ -88,7 +83,6 @@ export default function ClientFooterSection({
 
   const onCancelJoin = async () => {
     if (!token) return onLoginPrompt();
-
     try {
       setIsSubmitting(true);
       await axios.delete(
@@ -98,9 +92,8 @@ export default function ClientFooterSection({
       localStorage.removeItem(storageKey);
       setIsJoined(false);
       setDialogMessage('참여가 취소되었습니다.');
-      setCurrentCount((prev) => prev - 1);
+      setCurrentCount(prev => prev - 1);
       setShowDialog(true);
-      router.refresh();
     } catch {
       setDialogMessage('참여 취소 중 오류가 발생했습니다.');
       setShowDialog(true);
@@ -112,7 +105,6 @@ export default function ClientFooterSection({
   const onCancelMeeting = () => {
     setDialogMessage('모임이 취소 되었습니다.');
     setShowDialog(true);
-    router.refresh();
   };
 
   const onShare = () => {
@@ -144,13 +136,10 @@ export default function ClientFooterSection({
           />
         </div>
       </div>
-
       {showDialog && (
         <Dialog onClose={handleDialogClose}>
           <div className="flex flex-col items-center justify-center py-6 px-4">
-            <p className="text-center text-base font-semibold mb-6">
-              {dialogMessage}
-            </p>
+            <p className="text-center text-base font-semibold mb-6">{dialogMessage}</p>
             <div className="flex gap-4">
               <button
                 className="bg-orange-500 text-white px-6 py-2 rounded-lg"
@@ -161,7 +150,10 @@ export default function ClientFooterSection({
               {dialogMessage === '로그인 후 참여가 가능합니다.' && (
                 <button
                   className="bg-gray-800 text-white px-6 py-2 rounded-lg"
-                  onClick={() => router.push('/login')}
+                  onClick={() => {
+                    handleDialogClose();
+                    router.push('/login');
+                  }}
                 >
                   로그인
                 </button>

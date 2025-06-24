@@ -1,11 +1,10 @@
 'use client';
 
 import { usePathname, useRouter } from 'next/navigation';
-import { createContext, useState, Dispatch,  SetStateAction, useEffect, useContext } from 'react';
+import React, { createContext, useState, Dispatch, SetStateAction, useEffect, useContext } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import Dialog from '@/components/shared/ui/Dialog';
-
 
 type AuthContextType = {
   token: string | null;
@@ -45,7 +44,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [userName, setUserName] = useState('');
   const [userId, setUserId] = useState(0);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
-  const setIsLoading = useState(true)[1];
+  const [isLoading, setIsLoading] = useState(true);
+
   const [previousPath, setPreviousPath] = useState<string>('/');
 
   const [showDialog, setShowDialog] = useState(false);
@@ -62,7 +62,10 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       router.replace(previousPath);
     }
 
-    if (dialogMessage === '로그인 정보가 유효하지 않습니다. \n다시 로그인 해주세요.') {
+    if (
+      dialogMessage ===
+      '로그인 정보가 유효하지 않습니다. \n다시 로그인 해주세요.'
+    ) {
       localStorage.clear();
       setToken(null);
       setUserId(0);
@@ -84,7 +87,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         name,
         companyName,
       });
-  
+
       if (result.status === 200) {
         setDialogMessage('회원가입이 완료되었습니다.');
         setShowDialog(true);
@@ -100,7 +103,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       } else {
         setDialogMessage('알 수 없는 오류가 발생했습니다.');
       }
-  
       setShowDialog(true);
     }
   };
@@ -108,7 +110,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const signin = async (email: string, password: string) => {
     try {
       const result = await axios.post('/api/auth/signin', { email, password });
-  
+
       if (result.status === 200) {
         localStorage.setItem('token', result.data.token);
         setToken(result.data.token);
@@ -127,7 +129,6 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       } else {
         setDialogMessage('알 수 없는 오류가 발생했습니다.');
       }
-  
       setShowDialog(true);
     }
   };
@@ -136,7 +137,7 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
     try {
       const result = await axios.post('/api/auth/fetch-user', { token });
       if (result.status === 200) {
-        localStorage.setItem('user_id', result.data.id);
+        localStorage.setItem('user_id', String(result.data.id));
         localStorage.setItem('user_email', result.data.email);
         localStorage.setItem('user_name', result.data.name);
         localStorage.setItem('user_company_name', result.data.companyName);
@@ -179,7 +180,15 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       setIsLoading(false);
     };
     checkAuth();
-  }, [setIsLoading]);
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>로딩 중...</p>
+      </div>
+    );
+  }
 
   return (
     <AuthContext.Provider
